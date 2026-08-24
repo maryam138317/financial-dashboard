@@ -19,7 +19,7 @@ financial-dashboard/
 │   │   │
 │   │   └── (dashboard)/
 │   │       ├── layout.tsx              # shared filter bar (time + type)
-│   │       ├── home/
+│   │       ├── transactions/
 │   │       │   └── page.tsx            # transactions table
 │   │       └── analytics/
 │   │           └── page.tsx            # pie/bar chart + breakdown table
