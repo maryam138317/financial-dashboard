@@ -7,18 +7,24 @@ type AuthUser = Omit<User, "password">;
 interface AuthStore {
   currentUser: AuthUser | null;
   loading: boolean;
-  error : string | null;
+  error: string | null;
+
   login: (username: string, password: string) => boolean;
   logout: () => void;
-  getUser: () => AuthUser | null;
+  clearError: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
   currentUser: null,
-  loading: true,
+  loading: false,
   error: null,
 
   login: (username, password) => {
+    set({
+      loading: true,
+      error: null,
+    });
+
     const user = users.find(
       (user) =>
         user.username === username &&
@@ -26,17 +32,20 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     );
 
     if (!user) {
-        set({loading: false})
-        set({error: 'No user found with this condidates!'})
-        return false;
+      set({
+        loading: false,
+        error: "Invalid username or password",
+      });
+
+      return false;
     }
 
     const { password: _, ...authUser } = user;
 
     set({
-        currentUser: authUser,
-        loading: false,
-        error: null
+      currentUser: authUser,
+      loading: false,
+      error: null,
     });
 
     return true;
@@ -45,16 +54,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   logout: () => {
     set({
       currentUser: null,
-      loading: false,
-      error: null
+      error: null,
     });
   },
 
-  getUser: () => {
+  clearError: () => {
     set({
-        loading: false,
-        error: null
-    })
-    return get().currentUser;
+      error: null,
+    });
   },
 }));
