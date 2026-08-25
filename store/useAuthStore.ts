@@ -11,13 +11,18 @@ interface AuthStore {
   error: string | null;
 
   login: (username: string, password: string) => boolean;
+  verifyPassword: (password: string) => boolean;
+  changePassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => boolean;
   logout: () => void;
   clearError: () => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       currentUser: null,
       loading: false,
       error: null,
@@ -54,9 +59,62 @@ export const useAuthStore = create<AuthStore>()(
         return true;
       },
 
+      verifyPassword: (password) => {
+        const currentUser = get().currentUser;
+
+        if (!currentUser) {
+          return false;
+        }
+
+        const user = users.find(
+          (user) =>
+            user.username === currentUser.username &&
+            user.password === password
+        );
+
+        return !!user;
+      },
+
+      changePassword: (currentPassword, newPassword) => {
+        const currentUser = get().currentUser;
+
+        if (!currentUser) {
+          set({
+            error: "You must be logged in to change your password.",
+          });
+
+          return false;
+        }
+
+        const user = users.find(
+          (user) =>
+            user.username === currentUser.username &&
+            user.password === currentPassword
+        );
+
+        if (!user) {
+          set({
+            error: "Your current password is incorrect.",
+          });
+
+          return false;
+        }
+
+        // Demo/local-data implementation.
+        // Update the in-memory user object.
+        user.password = newPassword;
+
+        set({
+          error: null,
+        });
+
+        return true;
+      },
+
       logout: () => {
         set({
           currentUser: null,
+          loading: false,
           error: null,
         });
       },

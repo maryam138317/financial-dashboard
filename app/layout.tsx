@@ -1,4 +1,3 @@
-import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
@@ -34,16 +33,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className={`${poppins.className} min-h-full`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
           <TooltipProvider>
             {children}
           </TooltipProvider>
-        </ThemeProvider>
       </body>
     </html>
   );
