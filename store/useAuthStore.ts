@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import { users } from "@/lib/data";
 import { User } from "@/lib/types";
 
@@ -14,53 +15,60 @@ interface AuthStore {
   clearError: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  currentUser: null,
-  loading: false,
-  error: null,
-
-  login: (username, password) => {
-    set({
-      loading: true,
-      error: null,
-    });
-
-    const user = users.find(
-      (user) =>
-        user.username === username &&
-        user.password === password
-    );
-
-    if (!user) {
-      set({
-        loading: false,
-        error: "Invalid username or password",
-      });
-
-      return false;
-    }
-
-    const { password: _, ...authUser } = user;
-
-    set({
-      currentUser: authUser,
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      currentUser: null,
       loading: false,
       error: null,
-    });
 
-    return true;
-  },
+      login: (username, password) => {
+        set({
+          loading: true,
+          error: null,
+        });
 
-  logout: () => {
-    set({
-      currentUser: null,
-      error: null,
-    });
-  },
+        const user = users.find(
+          (user) =>
+            user.username === username &&
+            user.password === password
+        );
 
-  clearError: () => {
-    set({
-      error: null,
-    });
-  },
-}));
+        if (!user) {
+          set({
+            loading: false,
+            error: "Invalid username or password",
+          });
+
+          return false;
+        }
+
+        const { password: _, ...authUser } = user;
+
+        set({
+          currentUser: authUser,
+          loading: false,
+          error: null,
+        });
+
+        return true;
+      },
+
+      logout: () => {
+        set({
+          currentUser: null,
+          error: null,
+        });
+      },
+
+      clearError: () => {
+        set({
+          error: null,
+        });
+      },
+    }),
+    {
+      name: "finance-auth",
+    }
+  )
+);
