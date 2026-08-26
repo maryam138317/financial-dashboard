@@ -5,9 +5,18 @@ import { useAuthStore } from "./useAuthStore";
 
 interface TransactionStore {
   transactions: Transaction[];
+
   userTransactions: () => Transaction[];
-  addTransaction: (transaction: Omit<Transaction, "id" | "user_id">) => void;
-  editTransaction: (id: string, updates: Partial<Omit<Transaction, "id" | "user_id">>) => void;
+
+  addTransaction: (
+    transaction: Omit<Transaction, "id" | "user_id">
+  ) => void;
+
+  editTransaction: (
+    id: string,
+    updates: Partial<Omit<Transaction, "id" | "user_id">>
+  ) => void;
+
   removeTransaction: (id: string) => void;
 }
 
@@ -16,13 +25,22 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
 
   userTransactions: () => {
     const { currentUser } = useAuthStore.getState();
-    if (!currentUser) return [];
-    return get().transactions.filter((t) => t.user_id === currentUser.id);
+
+    if (!currentUser) {
+      return [];
+    }
+
+    return get().transactions.filter(
+      (transaction) => transaction.user_id === currentUser.id
+    );
   },
 
   addTransaction: (transaction) => {
     const { currentUser } = useAuthStore.getState();
-    if (!currentUser) return;
+
+    if (!currentUser) {
+      return;
+    }
 
     const newTransaction: Transaction = {
       ...transaction,
@@ -30,20 +48,29 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
       user_id: currentUser.id,
     };
 
-    set((state) => ({ transactions: [...state.transactions, newTransaction] }));
+    set((state) => ({
+      transactions: [...state.transactions, newTransaction],
+    }));
   },
 
   editTransaction: (id, updates) => {
     set((state) => ({
-      transactions: state.transactions.map((t) =>
-        t.id === id ? { ...t, ...updates } : t
+      transactions: state.transactions.map((transaction) =>
+        transaction.id === id
+          ? {
+              ...transaction,
+              ...updates,
+            }
+          : transaction
       ),
     }));
   },
 
   removeTransaction: (id) => {
     set((state) => ({
-      transactions: state.transactions.filter((t) => t.id !== id),
+      transactions: state.transactions.filter(
+        (transaction) => transaction.id !== id
+      ),
     }));
   },
 }));

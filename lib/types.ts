@@ -1,35 +1,48 @@
-type type = 'Income' | 'Expose' | 'Savings';
+export type TransactionType = "Income" | "Expose" | "Savings";
 
+export type IncomeCategory =
+  | "Salary"
+  | "Bonus"
+  | "Petty Cash"
+  | "Others";
 
-type IncomeCategory = 'Salary' | 'Bonus' | 'Petty Cash' | 'Others';
+export type ExposeCategory =
+  | "Transport"
+  | "Food"
+  | "Beauty"
+  | "Social Life"
+  | "Education"
+  | "Health"
+  | "Gift"
+  | "Others";
 
-type ExposeCategory = 'Transport' | 'Food' | 'Beauty' | 'Social Life' | 'Education' | 'Health' | 'Gift' | 'Others';
+export type SavingCategory = "Save for Future";
 
-type savingCategory = 'Save for Future';
+export type TransactionCategory =
+  | IncomeCategory
+  | ExposeCategory
+  | SavingCategory;
 
-type TransactionCategory = IncomeCategory | ExposeCategory | savingCategory;
-
-
-export interface User{
-    id: string,
-    username : string,
-    password: string,
-    image ?: string //OPTIONAL: if there's no image, store empty string
+export interface User {
+  id: string;
+  username: string;
+  password: string;
+  image?: string;
 }
 
 export interface Transaction {
-    id: string,
-    user_id: string,
-    amount: number,
-    type: type,
-    category: TransactionCategory,
-    date: Date,
-    goal_id ?: string //OPTIONAL: if the transaction is for saving money
+  id: string;
+  user_id: string;
+  amount: number;
+  type: TransactionType;
+  category: TransactionCategory;
+  date: Date;
+  goal_id?: string;
 }
 
 export interface Goal {
-    id: string,
-    user_id: string,
-    title: string,
-    amount: number
+  id: string;
+  user_id: string;
+  title: string;
+  amount: number;
 }
