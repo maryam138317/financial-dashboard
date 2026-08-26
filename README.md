@@ -18,7 +18,7 @@ financial-dashboard/
 │   │   │   └── page.tsx
 │   │   │
 │   │   └── (dashboard)/
-│   │       ├── layout.tsx              # shared filter bar (time + type)
+│   │       ├── layout.tsx              # shared filter bar (time + type) + add button
 │   │       ├── page.tsx          # transactions table
 │   │       └── analytics/
 │   │           └── page.tsx            # pie/bar chart + breakdown table

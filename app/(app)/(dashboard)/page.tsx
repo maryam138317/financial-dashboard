@@ -1,5 +1,8 @@
 // default page
 
 export default function TransactionPage (){
-    return <div>transactions</div>
+    return <div>
+        <h1>Transactions</h1>
+        
+    </div>
 }
