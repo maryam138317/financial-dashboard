@@ -36,7 +36,7 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
 
     return get().transactions.filter(
       (transaction) => transaction.user_id === currentUser.id
-    );
+    ).reverse();
   },
 
   totalExpose: () => {

@@ -1,22 +1,38 @@
-export type TransactionType = "Income" | "Expose" | "Savings";
+export type TransactionType =
+  | "Income"
+  | "Expose"
+  | "Savings";
+
+export const incomeCategories = [
+  "Salary",
+  "Bonus",
+  "Petty Cash",
+  "Others",
+] as const;
 
 export type IncomeCategory =
-  | "Salary"
-  | "Bonus"
-  | "Petty Cash"
-  | "Others";
+  (typeof incomeCategories)[number];
+
+export const exposeCategories = [
+  "Transport",
+  "Food",
+  "Beauty",
+  "Social Life",
+  "Education",
+  "Health",
+  "Gift",
+  "Others",
+] as const;
 
 export type ExposeCategory =
-  | "Transport"
-  | "Food"
-  | "Beauty"
-  | "Social Life"
-  | "Education"
-  | "Health"
-  | "Gift"
-  | "Others";
+  (typeof exposeCategories)[number];
 
-export type SavingCategory = "Save for Future";
+export const savingCategories = [
+  "Save for Future",
+] as const;
+
+export type SavingCategory =
+  (typeof savingCategories)[number];
 
 export type TransactionCategory =
   | IncomeCategory
