@@ -7,6 +7,9 @@ interface TransactionStore {
   transactions: Transaction[];
 
   userTransactions: () => Transaction[];
+  totalExpose: () => number;
+  totalIncome: () => number;
+  totalSavings: () => number;
 
   addTransaction: (
     transaction: Omit<Transaction, "id" | "user_id">
@@ -32,6 +35,61 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
 
     return get().transactions.filter(
       (transaction) => transaction.user_id === currentUser.id
+    );
+  },
+
+  totalExpose: () => {
+    const { currentUser } = useAuthStore.getState();
+
+    if (!currentUser) {
+      return 0;
+    }
+
+    const exposeItems = get().transactions.filter(
+      (transaction) =>
+        transaction.user_id === currentUser.id &&
+        transaction.type === "Expose"
+    );
+
+    return exposeItems.reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+  },
+  totalIncome: () => {
+    const { currentUser } = useAuthStore.getState();
+
+    if (!currentUser) {
+      return 0;
+    }
+
+    const exposeItems = get().transactions.filter(
+      (transaction) =>
+        transaction.user_id === currentUser.id &&
+        transaction.type === "Income"
+    );
+
+    return exposeItems.reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+  },
+  totalSavings: () => {
+    const { currentUser } = useAuthStore.getState();
+
+    if (!currentUser) {
+      return 0;
+    }
+
+    const exposeItems = get().transactions.filter(
+      (transaction) =>
+        transaction.user_id === currentUser.id &&
+        transaction.type === "Savings"
+    );
+
+    return exposeItems.reduce(
+      (total, transaction) => total + transaction.amount,
+      0
     );
   },
 

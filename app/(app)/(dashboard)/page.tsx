@@ -1,21 +1,36 @@
+"use client";
+
 import TransactionTable from "@/components/transactions/table";
 import TotalCard from "@/components/transactions/total-card";
+import { useTransactionStore } from "@/store/useTransactionStore";
 
 export default function TransactionPage() {
+  const { totalExpose, totalIncome, totalSavings } = useTransactionStore();
+
   return (
-    <main className="p-6">
-      <div className="flex items-center justify-between">
-        <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Transactions</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          View all of your income, expenses, and savings.
-        </p>
+    <main className="space-y-6 p-4 sm:p-6">
+      {/* Header + Summary */}
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+        {/* Page heading */}
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Transactions
+          </h1>
+
+          <p className="mt-1 text-sm text-muted-foreground">
+            View all of your income, expenses, and savings.
+          </p>
         </div>
-        <div className="flex">
-            <TotalCard title="Income" amount={2222}/>
+
+        {/* Summary cards */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:w-auto">
+          <TotalCard title="Income" amount={totalIncome()} />
+          <TotalCard title="Expenses" amount={totalExpose()} />
+          <TotalCard title="Savings" amount={totalSavings()} />
         </div>
       </div>
 
+      {/* Transactions */}
       <TransactionTable />
     </main>
   );

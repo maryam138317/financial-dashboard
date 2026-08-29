@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 
 interface TotalCardProps {
   title: string;
@@ -10,15 +10,13 @@ export default function TotalCard({
   amount,
 }: TotalCardProps) {
   return (
-    <Card className="w-full shadow-sm">
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+    <Card className="border-border/60 shadow-sm p-1">
+      <CardContent className="p-4">
+        <p className="text-xs font-medium text-muted-foreground">
           {title}
-        </CardTitle>
-      </CardHeader>
+        </p>
 
-      <CardContent>
-        <p className="text-xl font-semibold tracking-tight">
+        <p className="mt-1 text-md font-semibold tracking-tight">
           ${amount.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
