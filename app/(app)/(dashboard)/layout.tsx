@@ -20,16 +20,22 @@ import {
 } from "@/components/ui/tooltip";
 
 import { Button } from "@/components/ui/button";
+import TotalCard from "@/components/transactions/total-card";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useTransactionStore } from "@/store/useTransactionStore";
 
 export default function DashboardLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
   const [isOpen, setOpen] = useState(false);
 
+  
+
   return (
     <div>
+      
       {children}
 
       <Dialog
