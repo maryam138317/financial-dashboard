@@ -5,7 +5,7 @@ import TotalCard from "@/components/transactions/total-card";
 import { useTransactionStore } from "@/store/useTransactionStore";
 
 export default function TransactionPage() {
-  const { totalExpose, totalIncome, totalSavings } = useTransactionStore();
+  const { totalExpose, totalIncome, totalSavings, remainingAmount } = useTransactionStore();
 
   return (
     <main className="space-y-6 p-4 sm:p-6">
@@ -23,10 +23,11 @@ export default function TransactionPage() {
         </div>
 
         {/* Summary cards */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:w-auto">
-          <TotalCard title="Income" amount={totalIncome()} />
-          <TotalCard title="Expenses" amount={totalExpose()} />
-          <TotalCard title="Savings" amount={totalSavings()} />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 lg:w-auto">
+          <TotalCard title="Remaining" amount={remainingAmount()} className="border-green-600 text-green-600 bg-green-50"/>
+          <TotalCard title="Income" amount={totalIncome()} className=""/>
+          <TotalCard title="Expenses" amount={totalExpose()} className=""/>
+          <TotalCard title="Savings" amount={totalSavings()} className=""/>
         </div>
       </div>
 

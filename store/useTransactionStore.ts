@@ -10,6 +10,7 @@ interface TransactionStore {
   totalExpose: () => number;
   totalIncome: () => number;
   totalSavings: () => number;
+  remainingAmount: () => number;
 
   addTransaction: (
     transaction: Omit<Transaction, "id" | "user_id">
@@ -91,6 +92,19 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
       (total, transaction) => total + transaction.amount,
       0
     );
+  },
+  remainingAmount: () => {
+    const { currentUser } = useAuthStore.getState();
+
+    if (!currentUser) {
+      return 0;
+    }
+
+    const income: number = get().totalIncome()
+    const expose: number = get().totalExpose()
+    const savings: number = get().totalSavings()
+
+    return income - expose - savings;
   },
 
   addTransaction: (transaction) => {
