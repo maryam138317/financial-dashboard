@@ -3,17 +3,53 @@
 import TransactionTable from "@/components/transactions/table";
 import TotalCard from "@/components/transactions/total-card";
 import { useTransactionStore } from "@/store/useTransactionStore";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function TransactionPage() {
-  const { totalExpose, totalIncome, totalSavings, remainingAmount } = useTransactionStore();
+  const transactions = useTransactionStore(
+    (state) => state.transactions
+  );
+
+  const currentUser = useAuthStore(
+    (state) => state.currentUser
+  );
+
+  const userTransactions = currentUser
+    ? transactions.filter(
+        (transaction) =>
+          transaction.user_id === currentUser.id
+      )
+    : [];
+
+  const totalIncome = userTransactions
+    .filter((transaction) => transaction.type === "Income")
+    .reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+
+  const totalExpose = userTransactions
+    .filter((transaction) => transaction.type === "Expose")
+    .reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+
+  const totalSavings = userTransactions
+    .filter((transaction) => transaction.type === "Savings")
+    .reduce(
+      (total, transaction) => total + transaction.amount,
+      0
+    );
+
+  const remainingAmount =
+    totalIncome - totalExpose - totalSavings;
 
   return (
-    <main className="space-y-6 p-4 sm:p-6">
-      {/* Header + Summary */}
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-        {/* Page heading */}
+    <main className="p-6">
+      <div className="mb-6 flex items-start justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
+          <h1 className="text-2xl font-semibold">
             Transactions
           </h1>
 
@@ -22,16 +58,33 @@ export default function TransactionPage() {
           </p>
         </div>
 
-        {/* Summary cards */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 lg:w-auto">
-          <TotalCard title="Remaining" amount={remainingAmount()} className="border-green-600 text-green-600 bg-green-50"/>
-          <TotalCard title="Income" amount={totalIncome()} className=""/>
-          <TotalCard title="Expenses" amount={totalExpose()} className=""/>
-          <TotalCard title="Savings" amount={totalSavings()} className=""/>
+        <div className="flex gap-3">
+          <TotalCard
+            className="bg-green-100 text-green-600 border border-green-600"
+            title="Remaining"
+            amount={remainingAmount}
+          />
+
+          <TotalCard
+            className=""
+            title="Income"
+            amount={totalIncome}
+          />
+
+          <TotalCard
+            className=""
+            title="Expense"
+            amount={totalExpose}
+          />
+
+          <TotalCard
+            className=""
+            title="Savings"
+            amount={totalSavings}
+          />
         </div>
       </div>
 
-      {/* Transactions */}
       <TransactionTable />
     </main>
   );

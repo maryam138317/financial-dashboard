@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+
 import {
   ArrowDownLeft,
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
   Pencil,
-  Trash2,
   PiggyBank,
+  Trash2,
 } from "lucide-react";
 
 import {
@@ -22,23 +23,47 @@ import {
 
 import { Button } from "@/components/ui/button";
 
-import { useTransactionStore } from "@/store/useTransactionStore";
-import { Transaction } from "@/lib/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-const ROWS_PER_PAGE = 8;
+import { useTransactionStore } from "@/store/useTransactionStore";
+import { useAuthStore } from "@/store/useAuthStore";
+
+import { Transaction } from "@/lib/types";
+import TransactionForm from "./transaction-form";
+
+const ROWS_PER_PAGE = 9;
 
 export default function TransactionTable() {
+
   const transactions = useTransactionStore(
     (state) => state.transactions
+  );
+
+  const currentUser = useAuthStore(
+    (state) => state.currentUser
   );
 
   const [currentPage, setCurrentPage] = useState(1);
 
   const userTransactions = useMemo(() => {
-    return useTransactionStore
-      .getState()
-      .userTransactions();
-  }, [transactions]);
+    if (!currentUser) {
+      return [];
+    }
+
+    return transactions
+      .filter(
+        (transaction) =>
+          transaction.user_id === currentUser.id
+      )
+      .reverse();
+  }, [transactions, currentUser]);
+
 
   const totalPages = Math.max(
     1,
@@ -47,8 +72,6 @@ export default function TransactionTable() {
     )
   );
 
-  // If transactions are deleted and the current page
-  // no longer exists, move back to the last page.
   useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
@@ -97,8 +120,8 @@ export default function TransactionTable() {
                 Amount
               </TableHead>
 
-              <TableHead className="h-12 w-27.5 text-right">
-                
+              <TableHead className="h-12 w-27 text-right">
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -150,18 +173,21 @@ export default function TransactionTable() {
   );
 }
 
+
 function TransactionRow({
   transaction,
 }: {
   transaction: Transaction;
 }) {
+  const [isOpen, setOpen] = useState(false);
+
   const removeTransaction = useTransactionStore(
     (state) => state.removeTransaction
   );
 
-  const handleDelete = () => {
+  function handleDelete() {
     removeTransaction(transaction.id);
-  };
+  }
 
   return (
     <TableRow className="group transition-colors hover:bg-muted/30">
@@ -174,7 +200,9 @@ function TransactionRow({
 
       {/* Type */}
       <TableCell>
-        <TransactionType type={transaction.type} />
+        <TransactionType
+          type={transaction.type}
+        />
       </TableCell>
 
       {/* Category */}
@@ -196,17 +224,41 @@ function TransactionRow({
       <TableCell className="pr-6">
         <div className="flex items-center justify-end gap-1">
           {/* Edit */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground transition-colors hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/30 dark:hover:text-blue-400"
-            aria-label="Edit transaction"
+          <Dialog
+            open={isOpen}
+            onOpenChange={setOpen}
           >
-            <Pencil className="h-4 w-4" />
-          </Button>
+            <DialogTrigger
+              render={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground transition-colors hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-950/30 dark:hover:text-blue-400"
+                  aria-label="Edit transaction"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              }
+            />
+
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>
+                  Edit Transaction
+                </DialogTitle>
+              </DialogHeader>
+
+              <TransactionForm
+                transaction={transaction}
+                onSuccess={() => setOpen(false)}
+              />
+            </DialogContent>
+          </Dialog>
 
           {/* Delete */}
           <Button
+            type="button"
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30 dark:hover:text-red-400"
@@ -264,10 +316,12 @@ function TransactionType({
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${item.className}`}
     >
       <Icon className="h-3.5 w-3.5" />
+
       {item.label}
     </span>
   );
 }
+
 
 function TransactionAmount({
   amount,
@@ -276,7 +330,13 @@ function TransactionAmount({
   amount: number;
   type: Transaction["type"];
 }) {
-  const config = {
+  const config: Record<
+    Transaction["type"],
+    {
+      prefix: string;
+      className: string;
+    }
+  > = {
     Income: {
       prefix: "+",
       className:
@@ -348,7 +408,9 @@ function Pagination({
 
   return (
     <div className="flex items-center gap-1">
+      {/* Previous */}
       <Button
+        type="button"
         variant="outline"
         size="icon"
         className="h-8 w-8"
@@ -358,11 +420,13 @@ function Pagination({
         }
       >
         <ChevronLeft className="h-4 w-4" />
+
         <span className="sr-only">
           Previous page
         </span>
       </Button>
 
+      {/* Page numbers */}
       {pages.map((page, index) => {
         if (page === "...") {
           return (
@@ -378,6 +442,7 @@ function Pagination({
         return (
           <Button
             key={page}
+            type="button"
             variant={
               currentPage === page
                 ? "default"
@@ -385,14 +450,18 @@ function Pagination({
             }
             size="icon"
             className="h-8 w-8 text-sm"
-            onClick={() => onPageChange(page)}
+            onClick={() =>
+              onPageChange(page)
+            }
           >
             {page}
           </Button>
         );
       })}
 
+      {/* Next */}
       <Button
+        type="button"
         variant="outline"
         size="icon"
         className="h-8 w-8"
@@ -402,6 +471,7 @@ function Pagination({
         }
       >
         <ChevronRight className="h-4 w-4" />
+
         <span className="sr-only">
           Next page
         </span>
@@ -409,6 +479,7 @@ function Pagination({
     </div>
   );
 }
+
 
 function getPageNumbers(
   currentPage: number,
@@ -422,7 +493,14 @@ function getPageNumbers(
   }
 
   if (currentPage <= 3) {
-    return [1, 2, 3, 4, "...", totalPages];
+    return [
+      1,
+      2,
+      3,
+      4,
+      "...",
+      totalPages,
+    ];
   }
 
   if (currentPage >= totalPages - 2) {

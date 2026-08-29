@@ -6,12 +6,6 @@ import { useAuthStore } from "./useAuthStore";
 interface TransactionStore {
   transactions: Transaction[];
 
-  userTransactions: () => Transaction[];
-  totalExpose: () => number;
-  totalIncome: () => number;
-  totalSavings: () => number;
-  remainingAmount: () => number;
-
   addTransaction: (
     transaction: Omit<Transaction, "id" | "user_id">
   ) => void;
@@ -24,125 +18,50 @@ interface TransactionStore {
   removeTransaction: (id: string) => void;
 }
 
-export const useTransactionStore = create<TransactionStore>((set, get) => ({
-  transactions: seedTransactions,
+export const useTransactionStore =
+  create<TransactionStore>((set) => ({
+    transactions: seedTransactions,
 
-  userTransactions: () => {
-    const { currentUser } = useAuthStore.getState();
+    addTransaction: (transaction) => {
+      const { currentUser } =
+        useAuthStore.getState();
 
-    if (!currentUser) {
-      return [];
-    }
+      if (!currentUser) return;
 
-    return get().transactions.filter(
-      (transaction) => transaction.user_id === currentUser.id
-    ).reverse();
-  },
+      const newTransaction: Transaction = {
+        ...transaction,
+        id: crypto.randomUUID(),
+        user_id: currentUser.id,
+      };
 
-  totalExpose: () => {
-    const { currentUser } = useAuthStore.getState();
+      set((state) => ({
+        transactions: [
+          ...state.transactions,
+          newTransaction,
+        ],
+      }));
+    },
 
-    if (!currentUser) {
-      return 0;
-    }
+    editTransaction: (id, updates) => {
+      set((state) => ({
+        transactions: state.transactions.map(
+          (transaction) =>
+            transaction.id === id
+              ? {
+                  ...transaction,
+                  ...updates,
+                }
+              : transaction
+        ),
+      }));
+    },
 
-    const exposeItems = get().transactions.filter(
-      (transaction) =>
-        transaction.user_id === currentUser.id &&
-        transaction.type === "Expose"
-    );
-
-    return exposeItems.reduce(
-      (total, transaction) => total + transaction.amount,
-      0
-    );
-  },
-  totalIncome: () => {
-    const { currentUser } = useAuthStore.getState();
-
-    if (!currentUser) {
-      return 0;
-    }
-
-    const exposeItems = get().transactions.filter(
-      (transaction) =>
-        transaction.user_id === currentUser.id &&
-        transaction.type === "Income"
-    );
-
-    return exposeItems.reduce(
-      (total, transaction) => total + transaction.amount,
-      0
-    );
-  },
-  totalSavings: () => {
-    const { currentUser } = useAuthStore.getState();
-
-    if (!currentUser) {
-      return 0;
-    }
-
-    const exposeItems = get().transactions.filter(
-      (transaction) =>
-        transaction.user_id === currentUser.id &&
-        transaction.type === "Savings"
-    );
-
-    return exposeItems.reduce(
-      (total, transaction) => total + transaction.amount,
-      0
-    );
-  },
-  remainingAmount: () => {
-    const { currentUser } = useAuthStore.getState();
-
-    if (!currentUser) {
-      return 0;
-    }
-
-    const income: number = get().totalIncome()
-    const expose: number = get().totalExpose()
-    const savings: number = get().totalSavings()
-
-    return income - expose - savings;
-  },
-
-  addTransaction: (transaction) => {
-    const { currentUser } = useAuthStore.getState();
-
-    if (!currentUser) {
-      return;
-    }
-
-    const newTransaction: Transaction = {
-      ...transaction,
-      id: crypto.randomUUID(),
-      user_id: currentUser.id,
-    };
-
-    set((state) => ({
-      transactions: [...state.transactions, newTransaction],
-    }));
-  },
-
-  editTransaction: (id, updates) => {
-    set((state) => ({
-      transactions: state.transactions.map((transaction) =>
-        transaction.id === id
-          ? {
-              ...transaction,
-              ...updates,
-            }
-          : transaction
-      ),
-    }));
-  },
-
-  removeTransaction: (id) => {
-    set((state) => ({
-      transactions: state.transactions.filter(
-        (transaction) => transaction.id !== id
-      ),
-    }));
-  },
-}));
+    removeTransaction: (id) => {
+      set((state) => ({
+        transactions: state.transactions.filter(
+          (transaction) =>
+            transaction.id !== id
+        ),
+      }));
+    },
+  }));
