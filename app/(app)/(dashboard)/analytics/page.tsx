@@ -1,8 +1,11 @@
 'use client'
+import PieChartComponent from "@/components/charts/pie-chart";
 import Dashboard from "@/components/layout/dashboard";
 
 export default function AnalyticsPage (){
     return <main className="p-6">
         <Dashboard title="Analytics" description="Analize all of your Transactions."/>
+        <PieChartComponent />
+
     </main>
 }
