@@ -32,6 +32,7 @@ export const useTransactionStore =
         ...transaction,
         id: crypto.randomUUID(),
         user_id: currentUser.id,
+        //goal_id:
       };
 
       set((state) => ({
