@@ -45,7 +45,7 @@ export default function Dashboard({title,description}: { title: string, descript
 
 
     return(
-        <div className="mb-6 flex items-start justify-between gap-6">
+        <div className="mb-6 flex flex-col items-start justify-between gap-6 md:flex-row">
         <div>
           <h1 className="text-2xl font-semibold">
             {title}
@@ -55,7 +55,7 @@ export default function Dashboard({title,description}: { title: string, descript
             {description}
           </p>
         </div> 
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap md:flex-nowrap">
           <TotalCard
             className="bg-green-100 text-green-600 border border-green-600"
             title="Remaining"

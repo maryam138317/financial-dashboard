@@ -26,7 +26,6 @@ export default function ProtectedLayout({
     }
   }, [currentUser, hydrated, router]);
 
-  // Don't render anything until Zustand has hydrated
   if (!hydrated) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
@@ -37,14 +36,13 @@ export default function ProtectedLayout({
     );
   }
 
-  // Prevent protected UI from flashing before redirect
   if (!currentUser) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="flex min-h-screen">
+      <div className="flex flex-col lg:flex-row min-h-screen">
         <AppSidebar />
 
         <main className="flex-1 overflow-x-hidden p-6 md:p-8">

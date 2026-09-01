@@ -10,6 +10,7 @@ import {
   CircleUserRound,
   Goal,
   LogOut,
+  Menu,
   WalletCards,
 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -97,7 +98,8 @@ export default function AppSidebar() {
   };
 
   return (
-    <aside className="sticky top-0 flex h-screen w-62 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-5">
+    <>
+      <aside className="sticky top-0 h-screen w-62 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-5 lg:flex hidden">
       {/* Logo */}
       <div className="flex items-center gap-3 px-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900">
@@ -179,5 +181,11 @@ export default function AppSidebar() {
         </div>
       </div>
     </aside>
+
+    {/* Hamburger Menu for smaller size */}
+    <div className="flex justify-end lg:hidden cursor-pointer pt-6 pr-6">
+      <Menu />
+    </div>
+    </>
   );
 }
