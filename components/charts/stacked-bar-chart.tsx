@@ -3,6 +3,7 @@
 import { Transaction } from "@/lib/types";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useTransactionStore } from "@/store/useTransactionStore";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useMemo } from "react";
 import {
   Bar,
@@ -39,11 +40,10 @@ type MonthlyBucketMap = Record<string, MonthlyBucket>;
 export default function BarChartComponent() {
   const { transactions } = useTransactionStore();
   const { currentUser } = useAuthStore();
+  const isMobile = useMediaQuery("(max-width: 639px)");
 
   const userTransactions = useMemo(() => {
-    return transactions.filter(
-      (transaction) => transaction.user_id === currentUser?.id
-    );
+    return transactions.filter((transaction) => transaction.user_id === currentUser?.id);
   }, [transactions, currentUser?.id]);
 
   const chartData = useMemo(() => {
@@ -68,18 +68,43 @@ export default function BarChartComponent() {
   }, [userTransactions]);
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 mt-6">
+    <div className="mt-6 w-full rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
       {chartData.length > 0 ? (
-        <ResponsiveContainer width="100%" height={380}>
-          <BarChart data={chartData} margin={{ top: 20, right: 20, bottom: 0, left: 0 }}>
+        <ResponsiveContainer width="100%" height={isMobile ? 280 : 380}>
+          <BarChart
+            data={chartData}
+            margin={
+              isMobile
+                ? { top: 10, right: 0, bottom: 0, left: 0 }
+                : { top: 20, right: 20, bottom: 0, left: 0 }
+            }
+          >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-            <XAxis dataKey="label" tick={{ fontSize: 12, fill: "#64748b" }} axisLine={{ stroke: "#e2e8f0" }} tickLine={false} />
-            <YAxis tick={{ fontSize: 12, fill: "#64748b" }} axisLine={false} tickLine={false} tickFormatter={(value) => `$${value.toLocaleString()}`} />
-            <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }} />
-            <Legend wrapperStyle={{ fontSize: 13, paddingTop: 12 }} iconType="circle" />
+            <XAxis
+              dataKey="label"
+              tick={{ fontSize: isMobile ? 10 : 12, fill: "#64748b" }}
+              axisLine={{ stroke: "#e2e8f0" }}
+              tickLine={false}
+              interval={isMobile ? "preserveStartEnd" : 0}
+              angle={isMobile ? -35 : 0}
+              textAnchor={isMobile ? "end" : "middle"}
+              height={isMobile ? 50 : 30}
+            />
+            <YAxis
+              tick={{ fontSize: isMobile ? 10 : 12, fill: "#64748b" }}
+              axisLine={false}
+              tickLine={false}
+              width={isMobile ? 40 : 60}
+              tickFormatter={(value) => `$${value.toLocaleString()}`}
+            />
+            <Tooltip
+              formatter={(value: number) => `$${value.toLocaleString()}`}
+              contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
+            />
+            <Legend wrapperStyle={{ fontSize: isMobile ? 11 : 13, paddingTop: 12 }} iconType="circle" />
             <Bar dataKey="Income" stackId="a" fill={TYPE_COLORS.Income} />
-            <Bar dataKey="Expose" stackId="b" fill={TYPE_COLORS.Expose} />
-            <Bar dataKey="Savings" stackId="c" fill={TYPE_COLORS.Savings} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Expose" stackId="a" fill={TYPE_COLORS.Expose} />
+            <Bar dataKey="Savings" stackId="a" fill={TYPE_COLORS.Savings} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       ) : (

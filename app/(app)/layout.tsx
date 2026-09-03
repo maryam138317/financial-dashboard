@@ -45,7 +45,7 @@ export default function ProtectedLayout({
       <div className="flex flex-col lg:flex-row min-h-screen">
         <AppSidebar />
 
-        <main className="flex-1 overflow-x-hidden p-6 md:p-8">
+        <main className="flex-1 overflow-x-hidden p-2 md:p-8">
           {children}
         </main>
       </div>

@@ -11,6 +11,7 @@ import {
   Sector,
   PieSectorDataItem,
   Cell,
+  ResponsiveContainer,
 } from "recharts";
 
 const renderActiveShape = ({
@@ -31,17 +32,10 @@ const renderActiveShape = ({
   const sin = Math.sin(-RADIAN * (midAngle ?? 1));
   const cos = Math.cos(-RADIAN * (midAngle ?? 1));
 
-  const sx =
-    (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
-
-  const sy =
-    (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
-
-  const mx =
-    (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
-
-  const my =
-    (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
+  const sx = (cx ?? 0) + ((outerRadius ?? 0) + 10) * cos;
+  const sy = (cy ?? 0) + ((outerRadius ?? 0) + 10) * sin;
+  const mx = (cx ?? 0) + ((outerRadius ?? 0) + 30) * cos;
+  const my = (cy ?? 0) + ((outerRadius ?? 0) + 30) * sin;
 
   const ex = mx + (cos >= 0 ? 1 : -1) * 22;
   const ey = my;
@@ -51,26 +45,12 @@ const renderActiveShape = ({
   return (
     <g>
       {/* Center label */}
-      <text
-        x={cx}
-        y={cy}
-        dy={-8}
-        textAnchor="middle"
-        fill="#0f172a"
-        className="font-medium"
-      >
+      <text x={cx} y={cy} dy={-8} textAnchor="middle" fill="#0f172a" className="font-medium">
         {payload?.name}
       </text>
 
       {/* Center amount */}
-      <text
-        x={cx}
-        y={cy}
-        dy={18}
-        textAnchor="middle"
-        fill="#0f172a"
-        className="font-semibold"
-      >
+      <text x={cx} y={cy} dy={18} textAnchor="middle" fill="#0f172a" className="font-semibold">
         ${Number(value).toLocaleString()}
       </text>
 
@@ -97,41 +77,17 @@ const renderActiveShape = ({
       />
 
       {/* Connector */}
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
-        fill="none"
-      />
+      <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
 
-      <circle
-        cx={ex}
-        cy={ey}
-        r={2}
-        fill={fill}
-        stroke="none"
-      />
+      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
 
       {/* Amount outside */}
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        textAnchor={textAnchor}
-        fill="#334155"
-        fontSize={13}
-        fontWeight={500}
-      >
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#334155" fontSize={13} fontWeight={500}>
         ${Number(value).toLocaleString()}
       </text>
 
       {/* Percentage */}
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill="#94a3b8"
-        fontSize={11}
-      >
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#94a3b8" fontSize={11}>
         {`${((percent ?? 0) * 100).toFixed(1)}%`}
       </text>
     </g>
@@ -158,66 +114,50 @@ export default function PieChartComponent() {
 
   const userTransactions = useMemo(() => {
     return transactions.filter(
-      (transaction) =>
-        transaction.user_id === currentUser?.id
+      (transaction) => transaction.user_id === currentUser?.id
     );
   }, [transactions, currentUser?.id]);
 
   const activeTransactions = useMemo(() => {
     return userTransactions.filter(
-      (transaction) =>
-        transaction.type === activeTab
+      (transaction) => transaction.type === activeTab
     );
   }, [userTransactions, activeTab]);
 
   const chartData = useMemo(() => {
     const grouped = activeTransactions.reduce(
-      (
-        acc: Record<string, number>,
-        transaction: Transaction
-      ) => {
-        const category =
-          transaction.category || "Other";
-
-        acc[category] =
-          (acc[category] || 0) +
-          Number(transaction.amount);
-
+      (acc: Record<string, number>, transaction: Transaction) => {
+        const category = transaction.category || "Other";
+        acc[category] = (acc[category] || 0) + Number(transaction.amount);
         return acc;
       },
       {}
     );
 
     return Object.entries(grouped)
-      .map(([name, value]) => ({
-        name,
-        value,
-      }))
+      .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
   }, [activeTransactions]);
 
   return (
     <div className="w-full space-y-6">
-
-      {/* Chart card */}
-      <div className="flex w-full items-center gap-8 rounded-2xl border border-slate-200 bg-white pl-5">
-
+      {/* Chart card — grid layout avoids the flex-basis sizing issue that hid the chart */}
+      <div className="grid w-full grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-[128px_1px_1fr] md:items-center md:gap-8">
         {/* Tabs */}
-        <div className="flex w-32 shrink-0 flex-col gap-2">
+        <div className="flex w-full gap-2 md:flex-col">
           {tabs.map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
               className={cn(
-                "w-full rounded-xl px-4 py-3 text-left",
+                "flex-1 rounded-xl px-4 py-3 text-left",
                 "text-sm font-medium transition-all",
                 "text-slate-600 hover:bg-slate-100",
                 "hover:text-slate-900",
-                activeTab === tab &&
-                  "bg-slate-900 text-white shadow-sm",
-                activeTab === tab &&
-                  "hover:bg-slate-900 hover:text-white"
+                "md:w-full md:flex-none",
+                activeTab === tab && "bg-slate-900 text-white shadow-sm",
+                activeTab === tab && "hover:bg-slate-900 hover:text-white"
               )}
             >
               {tab}
@@ -225,51 +165,35 @@ export default function PieChartComponent() {
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="h-56 w-px bg-slate-200" />
+        {/* Divider — hidden below 768px, vertical column from 768px up */}
+        <div className="hidden h-56 w-px bg-slate-200 md:block md:justify-self-center" />
 
-        {/* Chart */}
-        <div className="flex min-h-80 h-fit flex-1 items-center justify-center">
+        {/* Chart — min-w-0 lets this grid track shrink correctly */}
+        <div className="min-w-0 w-full">
           {chartData.length > 0 ? (
-            <PieChart
-              style={{
-                width: "100%",
-                maxWidth: "500px",
-                aspectRatio: 1,
-              }}
-              responsive
-              margin={{
-                top: 50,
-                right: 100,
-                bottom: 20,
-                left: 100,
-              }}
-            >
-              <Pie
-                data={chartData}
-                activeShape={renderActiveShape}
-                cx="50%"
-                cy="50%"
-                innerRadius="58%"
-                outerRadius="74%"
-                dataKey="value"
-                isAnimationActive
-              >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${entry.name}-${index}`}
-                    fill={colors[index % colors.length]}
-                  />
-                ))}
-              </Pie>
-
-              
-            </PieChart>
+            <div className="mx-auto w-full max-w-[500px]">
+              <ResponsiveContainer width="100%" height={320} minWidth={0}>
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    activeShape={renderActiveShape}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius="58%"
+                    outerRadius="74%"
+                    dataKey="value"
+                    isAnimationActive
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${entry.name}-${index}`} fill={colors[index % colors.length]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           ) : (
             <div className="flex h-80 items-center justify-center">
-              <p className="text-sm text-slate-400">
-                No {activeTab.toLowerCase()} transactions
-              </p>
+              <p className="text-sm text-slate-400">No {activeTab.toLowerCase()} transactions</p>
             </div>
           )}
         </div>
