@@ -18,6 +18,7 @@ import { useGoalStore } from "@/store/useGoalStore";
 import { useTransactionStore } from "@/store/useTransactionStore";
 import { PlusIcon, PiggyBankIcon, CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 function GoalRing({ percentage, reached }: { percentage: number; reached: boolean }) {
   const radius = 34;
@@ -202,7 +203,8 @@ const handleBuy = (goal: Goal) => {
               >
                 <GoalRing percentage={percentage} reached={reached} />
 
-                <div className="flex flex-1 flex-col justify-between">
+                <Link href={`/goals/${goal.id}`}>
+                  <div className="flex flex-1 flex-col justify-between">
                   <div>
                     <h3 className="font-semibold text-slate-900">{goal.title}</h3>
                     <p className="mt-0.5 text-sm text-slate-500">
@@ -222,6 +224,7 @@ const handleBuy = (goal: Goal) => {
                     )}
                   </div>
                 </div>
+                </Link>
               </div>
             );
           })}

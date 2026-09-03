@@ -39,11 +39,8 @@ import TransactionForm from "./transaction-form";
 
 const ROWS_PER_PAGE = 9;
 
-export default function TransactionTable() {
+export default function TransactionTable({transactions}: {transactions: Transaction[]}) {
 
-  const transactions = useTransactionStore(
-    (state) => state.transactions
-  );
 
   const currentUser = useAuthStore(
     (state) => state.currentUser
