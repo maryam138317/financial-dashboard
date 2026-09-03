@@ -13,6 +13,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from "recharts";
+import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
 const renderActiveShape = ({
   cx,
@@ -44,17 +45,14 @@ const renderActiveShape = ({
 
   return (
     <g>
-      {/* Center label */}
       <text x={cx} y={cy} dy={-8} textAnchor="middle" fill="#0f172a" className="font-medium">
         {payload?.name}
       </text>
 
-      {/* Center amount */}
       <text x={cx} y={cy} dy={18} textAnchor="middle" fill="#0f172a" className="font-semibold">
         ${Number(value).toLocaleString()}
       </text>
 
-      {/* Main active slice */}
       <Sector
         cx={cx}
         cy={cy}
@@ -65,7 +63,6 @@ const renderActiveShape = ({
         fill={fill}
       />
 
-      {/* Active slice highlight */}
       <Sector
         cx={cx}
         cy={cy}
@@ -76,23 +73,31 @@ const renderActiveShape = ({
         fill={fill}
       />
 
-      {/* Connector */}
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
 
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
 
-      {/* Amount outside */}
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#334155" fontSize={13} fontWeight={500}>
         ${Number(value).toLocaleString()}
       </text>
 
-      {/* Percentage */}
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#94a3b8" fontSize={11}>
         {`${((percent ?? 0) * 100).toFixed(1)}%`}
       </text>
     </g>
   );
 };
+
+const COLORS = [
+  "#4F46E5", // Indigo
+  "#0D9488", // Teal
+  "#F59E0B", // Amber
+  "#E11D48", // Rose
+  "#7C3AED", // Violet
+  "#0284C7", // Sky
+  "#65A30D", // Lime
+  "#DB2777", // Pink
+];
 
 export default function PieChartComponent() {
   const { transactions } = useTransactionStore();
@@ -101,16 +106,6 @@ export default function PieChartComponent() {
   const [activeTab, setActiveTab] = useState("Expose");
 
   const tabs = ["Expose", "Income", "Savings"];
-  const colors = [
-    "#4F46E5", // Indigo
-    "#0D9488", // Teal
-    "#F59E0B", // Amber
-    "#E11D48", // Rose
-    "#7C3AED", // Violet
-    "#0284C7", // Sky
-    "#65A30D", // Lime
-    "#DB2777", // Pink
-  ];
 
   const userTransactions = useMemo(() => {
     return transactions.filter(
@@ -141,7 +136,7 @@ export default function PieChartComponent() {
 
   return (
     <div className="w-full space-y-6">
-      {/* Chart card — grid layout avoids the flex-basis sizing issue that hid the chart */}
+      {/* Chart card */}
       <div className="grid w-full grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-[128px_1px_1fr] md:items-center md:gap-8">
         {/* Tabs */}
         <div className="flex w-full gap-2 md:flex-col">
@@ -165,13 +160,13 @@ export default function PieChartComponent() {
           ))}
         </div>
 
-        {/* Divider — hidden below 768px, vertical column from 768px up */}
+        {/* Divider */}
         <div className="hidden h-56 w-px bg-slate-200 md:block md:justify-self-center" />
 
-        {/* Chart — min-w-0 lets this grid track shrink correctly */}
+        {/* Chart */}
         <div className="min-w-0 w-full">
           {chartData.length > 0 ? (
-            <div className="mx-auto w-full max-w-[500px]">
+            <div className="mx-auto w-full max-w-125">
               <ResponsiveContainer width="100%" height={320} minWidth={0}>
                 <PieChart>
                   <Pie
@@ -185,7 +180,7 @@ export default function PieChartComponent() {
                     isAnimationActive
                   >
                     {chartData.map((entry, index) => (
-                      <Cell key={`cell-${entry.name}-${index}`} fill={colors[index % colors.length]} />
+                      <Cell key={`cell-${entry.name}-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                 </PieChart>
@@ -197,6 +192,32 @@ export default function PieChartComponent() {
             </div>
           )}
         </div>
+
+        {/* Category totals — spans the full card width */}
+        {chartData.length > 0 && (
+          <div className="w-full md:col-span-3">
+            <Table className="w-full">
+              <TableBody>
+                {chartData.map((data, index) => (
+                  <TableRow key={data.name}>
+                    <TableCell className="w-full">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="h-2.5 w-2.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                        />
+                        <span className="text-sm text-slate-700">{data.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right font-medium text-slate-900">
+                      ${data.value.toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </div>
     </div>
   );
