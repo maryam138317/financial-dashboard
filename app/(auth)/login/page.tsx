@@ -77,7 +77,6 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(submitForm)}>
             <FieldGroup>
 
-              {/* Username */}
               <Controller
                 name="username"
                 control={control}
@@ -107,7 +106,6 @@ export default function LoginPage() {
                 )}
               />
 
-              {/* Password */}
               <Controller
                 name="password"
                 control={control}
@@ -137,14 +135,12 @@ export default function LoginPage() {
                 )}
               />
 
-              {/* Authentication error */}
               {error && (
                 <p className="text-sm text-red-600">
                   {error}
                 </p>
               )}
 
-              {/* Submit */}
               <Button
                 type="submit"
                 className="w-full"
