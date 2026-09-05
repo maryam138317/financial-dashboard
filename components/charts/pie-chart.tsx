@@ -136,9 +136,7 @@ export default function PieChartComponent() {
 
   return (
     <div className="w-full space-y-6">
-      {/* Chart card */}
       <div className="grid w-full grid-cols-1 gap-6 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-[128px_1px_1fr] md:items-center md:gap-8">
-        {/* Tabs */}
         <div className="flex w-full gap-2 md:flex-col">
           {tabs.map((tab) => (
             <button
@@ -160,10 +158,8 @@ export default function PieChartComponent() {
           ))}
         </div>
 
-        {/* Divider */}
         <div className="hidden h-56 w-px bg-slate-200 md:block md:justify-self-center" />
 
-        {/* Chart */}
         <div className="min-w-0 w-full">
           {chartData.length > 0 ? (
             <div className="mx-auto w-full max-w-125">
@@ -192,8 +188,6 @@ export default function PieChartComponent() {
             </div>
           )}
         </div>
-
-        {/* Category totals — spans the full card width */}
         {chartData.length > 0 && (
           <div className="w-full md:col-span-3">
             <Table className="w-full">

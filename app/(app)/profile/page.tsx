@@ -114,7 +114,6 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      {/* Profile card */}
       <Card className="overflow-hidden border-slate-200 shadow-sm">
         <CardHeader className="border-b border-slate-100 bg-slate-50/70 px-6 py-5">
           <div className="flex items-center gap-4">
@@ -282,7 +281,6 @@ export default function ProfilePage() {
                   </p>
                 </div>
 
-                {/* Confirm password */}
                 <div className="space-y-2">
                   <Label htmlFor="confirm-password">
                     Confirm new password

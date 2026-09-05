@@ -3,10 +3,9 @@ import { goals as seedGoals } from "@/lib/data"
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthStore";
 
-// useGoalStore.ts — change addGoal's return type and implementation
 interface GoalStore {
     goals: Goal[];
-    addGoal: (goal: Omit<Goal, "id" | "user_id">) => string; // now returns the new id
+    addGoal: (goal: Omit<Goal, "id" | "user_id">) => string; 
     removeGoal: (id: string) => void;
 }
 
@@ -17,7 +16,7 @@ export const useGoalStore = create<GoalStore>((set) => ({
         const { currentUser } = useAuthStore.getState();
         const id = crypto.randomUUID();
 
-        if (!currentUser) return id; // caller still gets an id even if this shouldn't happen
+        if (!currentUser) return id; 
 
         const newGoal: Goal = {
             ...goal,

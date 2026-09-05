@@ -100,8 +100,6 @@ export const useAuthStore = create<AuthStore>()(
           return false;
         }
 
-        // Demo/local-data implementation.
-        // Update the in-memory user object.
         user.password = newPassword;
 
         set({

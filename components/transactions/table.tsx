@@ -96,7 +96,6 @@ export default function TransactionTable({transactions}: {transactions: Transact
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
-      {/* Table */}
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -140,7 +139,6 @@ export default function TransactionTable({transactions}: {transactions: Transact
         </Table>
       </div>
 
-      {/* Pagination */}
       {userTransactions.length > 0 && (
         <div className="flex flex-col gap-3 border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-muted-foreground">
@@ -188,28 +186,24 @@ function TransactionRow({
 
   return (
     <TableRow className="group transition-colors hover:bg-muted/30">
-      {/* Date */}
       <TableCell className="pl-6">
         <span className="font-medium text-foreground">
           {formatDate(transaction.date)}
         </span>
       </TableCell>
 
-      {/* Type */}
       <TableCell>
         <TransactionType
           type={transaction.type}
         />
       </TableCell>
 
-      {/* Category */}
       <TableCell>
         <span className="text-sm text-muted-foreground">
           {transaction.category}
         </span>
       </TableCell>
 
-      {/* Amount */}
       <TableCell className="text-right">
         <TransactionAmount
           amount={transaction.amount}
@@ -217,10 +211,9 @@ function TransactionRow({
         />
       </TableCell>
 
-      {/* Actions */}
       <TableCell className="pr-6">
         <div className="flex items-center justify-end gap-1">
-          {/* Edit */}
+
           <Dialog
             open={isOpen}
             onOpenChange={setOpen}
@@ -253,7 +246,6 @@ function TransactionRow({
             </DialogContent>
           </Dialog>
 
-          {/* Delete */}
           <Button
             type="button"
             variant="ghost"
@@ -405,7 +397,6 @@ function Pagination({
 
   return (
     <div className="flex items-center gap-1">
-      {/* Previous */}
       <Button
         type="button"
         variant="outline"
@@ -423,7 +414,6 @@ function Pagination({
         </span>
       </Button>
 
-      {/* Page numbers */}
       {pages.map((page, index) => {
         if (page === "...") {
           return (
@@ -456,7 +446,6 @@ function Pagination({
         );
       })}
 
-      {/* Next */}
       <Button
         type="button"
         variant="outline"

@@ -26,13 +26,11 @@ interface BaseTransaction {
   note?: string;
 }
 
-// Only the Savings variant can carry a goal_id — this is enforced by the type system now.
 export type Transaction =
   | (BaseTransaction & { type: "Income"; category: IncomeCategory })
   | (BaseTransaction & { type: "Expose"; category: ExposeCategory })
   | (BaseTransaction & { type: "Savings"; category: SavingCategory; goal_id: string });
 
-// Regular Omit doesn't distribute correctly over unions — this variant does.
 export type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never;
 
 export interface User {

@@ -78,7 +78,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      {/* Logo */}
       <div className="flex items-center gap-3 px-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900">
           <WalletCards className="h-5 w-5 text-white" />
@@ -89,7 +88,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      {/* Navigation */}
       <nav className="mt-8 flex flex-1 flex-col gap-1">
         <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           Overview
@@ -99,7 +97,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      {/* User */}
       <div className="border-t border-slate-100 pt-4">
         <div className="flex items-center gap-3 rounded-xl p-2">
           <Avatar className="h-9 w-9">
@@ -139,12 +136,9 @@ export default function AppSidebar() {
 
   return (
     <>
-      {/* Sidebar — visible from lg (1024px) up */}
       <aside className="sticky top-0 hidden h-screen w-62 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-5 lg:flex">
         <SidebarContent />
       </aside>
-
-      {/* Hamburger menu — visible below lg */}
       <div className="lg:hidden">
         <Drawer open={openDrawer} onOpenChange={setDrawer} swipeDirection="right">
           <DrawerTrigger

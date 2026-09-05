@@ -21,8 +21,6 @@ export default function GoalTransactionView({ goalId }: { goalId: string }) {
   const currentGoal = goals.find((goal) => goal.id === goalId);
 
   if (!currentGoal) {
-    // Once a buy has kicked off, the goal legitimately disappears from the
-    // store before the redirect lands — render nothing instead of "not found".
     if (isBuying) return null;
 
     return <div className="p-6 text-sm text-slate-500">Goal not found.</div>;

@@ -8,7 +8,6 @@ import { format } from "date-fns";
 
 import {
   Transaction,
-  TransactionCategory,
   incomeCategories,
   exposeCategories,
   savingCategories,
@@ -199,7 +198,6 @@ export default function TransactionForm({
   return (
     <form onSubmit={handleSubmit(submitForm)} className="space-y-5">
       <FieldGroup>
-        {/* Amount */}
         <Controller
           name="amount"
           control={control}
@@ -228,8 +226,6 @@ export default function TransactionForm({
             </Field>
           )}
         />
-
-        {/* Type */}
         <Controller
           name="type"
           control={control}
@@ -262,8 +258,6 @@ export default function TransactionForm({
             </Field>
           )}
         />
-
-        {/* Category */}
         <Controller
           name="category"
           control={control}
@@ -294,8 +288,6 @@ export default function TransactionForm({
             </Field>
           )}
         />
-
-        {/* Goal — only for Savings */}
         {selectedType === "Savings" && (
           <>
             <Controller
@@ -387,8 +379,6 @@ export default function TransactionForm({
             )}
           </>
         )}
-
-        {/* Date */}
         <Controller
           name="date"
           control={control}
@@ -423,8 +413,6 @@ export default function TransactionForm({
             </Field>
           )}
         />
-
-        {/* Submit */}
         <Button type="submit" className="w-full">
           {isEditing ? "Update Transaction" : "Add Transaction"}
         </Button>
