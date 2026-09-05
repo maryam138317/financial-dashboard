@@ -98,7 +98,7 @@ export default function BarChartComponent() {
               tickFormatter={(value) => `$${value.toLocaleString()}`}
             />
             <Tooltip
-              formatter={(value: number) => `$${value.toLocaleString()}`}
+              formatter={(value) => `$${Number((value ?? 0).toLocaleString())}`}
               contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
             />
             <Legend wrapperStyle={{ fontSize: isMobile ? 11 : 13, paddingTop: 12 }} iconType="circle" />
