@@ -84,3 +84,14 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+
+## Roadmap / Known Limitations
+
+- Data resets on reload — no persistence or backend yet
+- Passwords are stored and compared in plain text (fine for a local prototype, not for production)
+- Purchasing a goal permanently removes it rather than marking it as "purchased" — goal history isn't preserved after a buy
+
+## License
+
+This project is for personal/learning use.
